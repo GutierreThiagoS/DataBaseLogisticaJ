@@ -2,7 +2,7 @@ const knex = require("../database/connection")
 const ItemOrder = require("./ItemOrder")
 const User = require("./User")
  
-class Order {
+class Orders {
 
     async create(date, nf, user_id) {
         try {
@@ -33,19 +33,15 @@ class Order {
 
     }
 
-    async findById(id){
+    async getOrders(idOrder) {
         try {
-            console.log("id - " + id )
-            var result = await knex.select("*").from("orders").where({id:id})
-            console.log("id - " + id + ",Order " + result)
-            if (result.length > 0) {
-                return true
-            } else {
-                return false
-            }
-        } catch (err){
-            console.log(err)
-            return false
+            console.log("id: " + idOrder );
+            var result = await knex.select().from("orders").where({ id : idOrder });
+            return result
+           
+        } catch(err) {
+            console.log(err);
+            return [];
         }
         
     }
@@ -84,4 +80,4 @@ class Order {
     }
 } 
 
-module.exports = new Order()
+module.exports = new Orders()

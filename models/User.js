@@ -1,5 +1,6 @@
 const knex = require("../database/connection")
 var bcrypt = require("bcrypt")
+var Orders = require("./Orders")
 
 class User {
 
@@ -64,6 +65,8 @@ class User {
 
     async findByEmail(email) {
         try{
+            console.log("EMAIL - " + email)
+
             var result = await knex
                 .select(["id", "name", "email", "password", "role"])
                 .where({email: email})
@@ -79,6 +82,76 @@ class User {
         } catch(err){
             console.log(err)
             result = undefined
+        }
+    }
+
+    async getAllUsersWorkers(){
+        try{
+            var usersList = await knex
+                .select(["id", "name", "email"])
+                .where({role: 0})
+                .table("users")
+
+            var orders = await knex
+                .select()
+                .table("orders");
+
+            var items = await knex.select().table("items_order")
+
+            orders.forEach( (order) => {
+                order.items = items.filter( i => i.order_id == order.id)
+            })
+
+            usersList.forEach( (user, i) => {
+                console.log("Index: " + i)
+                console.log("user")
+                console.log(user)
+                user.order = orders.filter( o => o.user_id == user.id)
+            })
+
+            return {
+                workers: usersList,
+                status: true,
+                info: "Dados retornados com Sucesso!"
+            }
+        } catch(err) {
+            return {
+                workers: [],
+                status: false,
+                info: "Error ! => " + err
+            }
+        }
+    }
+
+    async getAllWorkersStatistcs(){ 
+        try{
+            var users = await knex.raw(`
+                SELECT U.name, U.email, 
+                (
+                    SELECT COUNT(*) FROM items_order io 
+                    INNER JOIN orders o ON io.order_id = o.id
+                     WHERE o.user_id = u.id 
+                ) AS countItem,
+                (
+                    SELECT COUNT(*) FROM items_order io 
+                    INNER JOIN orders o ON io.order_id = o.id
+                     WHERE o.user_id = u.id AND io.timer_end != ''
+                ) AS itemConcluded
+                FROM users U WHERE U.role = 0
+            `)
+            
+            return {
+                users: users[0],
+                status: true,
+                info: "Dados retornados com Sucesso!"
+            }
+
+        } catch(err) {
+            return {
+                users: [],
+                status: false,
+                info: "Error => " + err
+            }
         }
     }
 }
