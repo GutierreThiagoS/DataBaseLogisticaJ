@@ -8,8 +8,11 @@ const ItemOrderController = require("../controllers/ItemOrderController");
 const { token, tokenGa,  } = require("../middleware/AdminAuth");
 
 router.get('/', HomeController.index);
-router.post('/orderpicking/user', UserController.create)
-router.post('/orderpicking/order', OrderController.create)
+//router.post('/orderpicking/user', UserController.create)
+router.post('/orderpicking/register_worker', tokenGa, UserController.create)
+
+// router.post('/orderpicking/order', OrderController.create)
+router.post('/orderpicking/create_order', tokenGa, OrderController.create)
 router.post('/orderpicking/item_order', ItemOrderController.create)
 
 router.post('/orderpicking/login', UserController.login)
@@ -20,6 +23,8 @@ router.post('/orderpicking/save_last_etiquette', token, ItemOrderController.upda
 
 router.post('/orderpicking/gaLogin', UserController.gaLogin)
 router.get('/orderpicking/ga_user_workers', tokenGa, UserController.getUsersWorkers)
+router.get('/orderpicking/all_workers_to_order', tokenGa, UserController.getAllWorkersToGa)
+router.get('/orderpicking/all_orders_to_items', tokenGa, OrderController.getAllOrderGa)
 
 router.get('/orderpicking/workers', UserController.getWorkersStatistics)
 

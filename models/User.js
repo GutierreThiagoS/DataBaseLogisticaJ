@@ -154,6 +154,28 @@ class User {
             }
         }
     }
+
+    async getAllWorkersToGa() {
+        try {
+
+            var users = await knex.select(["id", "name", "email"]).from("users").where({role: 0})
+
+            console.log(users)
+
+            return {
+                users: users,
+                status: true,
+                info: "Dados retornados com Sucesso!"
+            }
+
+        } catch (err) {
+            return {
+                users: [],
+                status: false,
+                info: "Error => " + err
+            }
+        }
+    }
 }
 
 module.exports = new User()

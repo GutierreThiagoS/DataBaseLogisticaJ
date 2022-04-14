@@ -78,6 +78,27 @@ class Orders {
             }
         }
     }
+
+    async getAllOrderGa(){
+        try {
+            var ordersUsers = await knex.raw(
+                "SELECT u.name, u.email, o.user_id, o.id, o.date, o.nf, o.timer_concluded FROM orders o INNER JOIN users u ON o.user_id = u.id"
+                )
+
+            return {
+                ordersUsers: ordersUsers[0],
+                info: "Pedidos OK!" ,
+                status: true
+            }
+        } catch(err) {
+            return {
+                ordersUsers: [],
+                info: "Error => " + err ,
+                status: false
+            }
+        }
+        
+    }
 } 
 
 module.exports = new Orders()

@@ -11,7 +11,6 @@ class UserController {
         var {name, email, password, role} = req.body
 
         if(email == undefined) {
-            res.status(400)
             res.json({
                 status: false,
                 info: "O e-mail é invalido!"
@@ -20,7 +19,6 @@ class UserController {
         } 
 
         if(isNaN(role)) {
-            res.status(400)
             res.json({
                 status: false,
                 info: "Indique a Função!"
@@ -31,7 +29,6 @@ class UserController {
         var emailExists = await User.findEmail(email)
 
         if(emailExists) {
-            res.status(406)
             res.json({
                 status: false,
                 info: "O e-mail já está cadastrado!"
@@ -161,6 +158,12 @@ class UserController {
         var statistics = await User.getAllWorkersStatistcs()
 
         res.json(statistics)
+    }
+
+    async getAllWorkersToGa(req, res) {
+
+        var users = await User.getAllWorkersToGa();
+        res.json(users)
     }
 }
 

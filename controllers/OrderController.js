@@ -6,14 +6,12 @@ class OrderController {
         var {date, nf, user_id} = req.body
 
         if(date == undefined) {
-            res.status(400)
             res.json({
                 status: false,
                 info: "Data Invalida!"
             })
         } 
         if(nf == undefined) {
-            res.status(400)
             res.json( {
                 status: false,
                 info: "Nota Fical Invalida!"
@@ -23,6 +21,12 @@ class OrderController {
 
         res.status(200)
         res.json(responseJson)
+    }
+
+    async getAllOrderGa(req, res) {
+        var response = await Order.getAllOrderGa()
+
+        res.json(response)
     }
 }
 
